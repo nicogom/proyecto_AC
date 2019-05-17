@@ -4,6 +4,7 @@
 #include <Adafruit_BMP280.h>
 #include <DHT.h>
 #include <LiquidCrystal.h>
+#include <Servo.h>
 
 //HAY QUE CAMBIAR LOS PINES!!!
 #define BMP_SCK  (13)
@@ -22,6 +23,7 @@ int d5 = 4;
 int d6 = 3;
 int d7 = 2;
 
+Servo servo1; // definir Servo
 Adafruit_BMP280 bmp; // definir sensor barometrico
 DHT dht(DHTPIN, DHTTYPE);//definir tipo de sensor dht
 LiquidCrystal lcd( RS, E, d4, d5, d6, d7); //configurar pantalla lcd
@@ -30,9 +32,10 @@ LiquidCrystal lcd( RS, E, d4, d5, d6, d7); //configurar pantalla lcd
 void setup() {
   
   Serial.begin(9600);
+  
   dht.begin();
   lcd.begin(16,2);
-  // analogWrite(VO,50);
+  servo1.attach(9);
   
    if (!bmp.begin()) {
     Serial.println(F("Could not find a valid BMP280 sensor, check wiring!"));
@@ -75,6 +78,14 @@ void loop() {
   lcd.print(pres_bmp);
   lcd.print("Hpa");
   
-   delay(8000);
+  delay(8000);
+  
+  if(temp_dht > 20 && hum_dht < 70 && pres_bmp > 180 ){
+      servo1.write(90);
+    }
+         else{
+            servo1.write(0);
+        }
+  
     
 }
