@@ -6,11 +6,6 @@
 #include <LiquidCrystal.h>
 #include <Servo.h>
 
-//HAY QUE CAMBIAR LOS PINES!!!
-#define BMP_SCK  (13)
-#define BMP_MISO (12)
-#define BMP_MOSI (11)
-#define BMP_CS   (10)
 
 #define DHTPIN 6 //Defiene el pin al que se conectará el sensor
 #define DHTTYPE DHT11 //Seleciona el tipo de sensor
@@ -32,35 +27,27 @@ LiquidCrystal lcd( RS, E, d4, d5, d6, d7); //configurar pantalla lcd
 void setup() {
   
   Serial.begin(9600);
-  
   dht.begin();
   lcd.begin(16,2);
   servo1.attach(9);
   
    if (!bmp.begin()) {
-    Serial.println(F("Could not find a valid BMP280 sensor, check wiring!"));
+    Serial.println(F("no encontro el bmp280"));
     while (1);
   }
 
-  /* Default settings from datasheet. */
-  bmp.setSampling(Adafruit_BMP280::MODE_NORMAL,     /* Operating Mode. */
-                  Adafruit_BMP280::SAMPLING_X2,     /* Temp. oversampling */
-                  Adafruit_BMP280::SAMPLING_X16,    /* Pressure oversampling */
-                  Adafruit_BMP280::FILTER_X16,      /* Filtering. */
-                  Adafruit_BMP280::STANDBY_MS_500); /* Standby time. */
    
 }
 
 void loop() {
   
-  int hum_dht = dht.readHumidity();
+  float hum_dht = dht.readHumidity();
   int temp_dht = dht.readTemperature();
-
   int pres_bmp = bmp.readPressure();
 
   if (isnan(hum_dht)||isnan(temp_dht))
    {
-        Serial.print("error sensor DHT11");
+        Serial.print("error en el sensor DHT11");
         return;
     }
   Serial.print(temp_dht);
