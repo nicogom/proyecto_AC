@@ -1,10 +1,11 @@
 
 #include <Wire.h>
 #include <SPI.h>
+#include <Adafruit_Sensor.h>
 #include <Adafruit_BMP280.h>
 #include <DHT.h>
 #include <LiquidCrystal.h>
-#include <Servo.h>
+//#include <Servo.h>
 
 
 #define DHTPIN 6 //Defiene el pin al que se conectará el sensor
@@ -18,8 +19,8 @@ int d5 = 4;
 int d6 = 3;
 int d7 = 2;
 
-Servo servo1; // definir Servo
-Adafruit_BMP280 bmp; // definir sensor barometrico
+//Servo servo1; // definir Servo
+Adafruit_BMP280 bmp; // definir sensor barometrico i2c
 DHT dht(DHTPIN, DHTTYPE);//definir tipo de sensor dht
 LiquidCrystal lcd( RS, E, d4, d5, d6, d7); //configurar pantalla lcd
 
@@ -29,7 +30,8 @@ void setup() {
   Serial.begin(9600);
   dht.begin();
   lcd.begin(16,2);
-  servo1.attach(9);
+  //servo1.attach(9);
+  pinMode(2,OUTPUT);
   
    if (!bmp.begin()) {
     Serial.println(F("no encontro el bmp280"));
@@ -40,8 +42,8 @@ void setup() {
 }
 
 void loop() {
-  
-  float hum_dht = dht.readHumidity();
+  digitalWrite(7,HIGH);
+  int hum_dht = dht.readHumidity();
   int temp_dht = dht.readTemperature();
   int pres_bmp = bmp.readPressure();
 
@@ -53,25 +55,27 @@ void loop() {
   Serial.print(temp_dht);
   lcd.clear();
   lcd.setCursor(0, 0);
-  lcd.print("temp: ");
+  lcd.print("tem:");
   lcd.print(temp_dht);
-  lcd.print("C");
+  lcd.print("C ");
   lcd.setCursor(8, 0);
-  lcd.print("hum: ");
+  lcd.print("hum:");
   lcd.print(hum_dht);
   lcd.print("%");
   lcd.setCursor(0, 1);
-  lcd.print("presion: ");
+  lcd.print("presion:");
   lcd.print(pres_bmp);
   lcd.print("Hpa");
   
   delay(8000);
   
-  if(temp_dht > 20 && hum_dht < 70 && pres_bmp > 180 ){
-      servo1.write(90);
+  if(temp_dht > 20 && hum_dht < 70 && pres_bmp > 27500 ){
+    //   digitalWrite(7,HIGH);
+  //    servo1.write(90);
     }
-         else{
-            servo1.write(0);
+       else{
+         //   digitalWrite(7,LOW);
+      //      servo1.write(0);
         }
   
     
