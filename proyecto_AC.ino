@@ -5,7 +5,7 @@
 #include <Adafruit_BMP280.h>
 #include <DHT.h>
 #include <LiquidCrystal.h>
-//#include <Servo.h>
+#include <Servo.h>
 
 
 #define DHTPIN 6 //Defiene el pin al que se conectará el sensor
@@ -19,11 +19,18 @@ int d5 = 4;
 int d6 = 3;
 int d7 = 2;
 
-//Servo servo1; // definir Servo
+Servo miServo; // definir Servo
 Adafruit_BMP280 bmp; // definir sensor barometrico i2c
 DHT dht(DHTPIN, DHTTYPE);//definir tipo de sensor dht
 LiquidCrystal lcd( RS, E, d4, d5, d6, d7); //configurar pantalla lcd
 
+const int pinPot = 3;
+const int pinServo = 13;
+const int pulsoMin = 650; //pulso de giro en microsegundos en 0°
+const int pulsoMax = 2550; //pulso de giro en microsegundos en 180°
+
+int valor ; //valor leido del pot
+int angulo; //valor del pulso
 
 void setup() {
   
@@ -37,6 +44,7 @@ void setup() {
     Serial.println(F("no encontro el bmp280"));
     while (1);
   }
+  miServo.attach( pinServo , pulsoMin , pulsoMax);
 
    
 }
@@ -78,5 +86,8 @@ void loop() {
       //      servo1.write(0);
         }
   
-    
+    valor = analogRead(pinPot);// valor del potenciometro
+    angulo = map(valor, 0, 1023, 0,180); // el valor transformado a un angulo
+    miServo.write(angulo); //para medir el angulo a levantar el paraguas
+    delay(60);
 }
